@@ -1,12 +1,6 @@
 import { PropsWithChildren } from 'react'
-
-import GlobalStyles from '@/styles/global'
+import { UserContextProvider } from './context/user/user-context-provider'
 
 export function Providers({ children }: PropsWithChildren) {
-  return (
-    <>
-      <GlobalStyles />
-      {children}
-    </>
-  )
+  return <UserContextProvider>{children}</UserContextProvider>
 }
