@@ -53,13 +53,6 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
 
       if (!serializedValue.user) return
 
-      console.log(
-        decryptPassword(
-          serializedValue.user?.password as string,
-          USER_SECRET_KEY
-        )
-      )
-
       actions.current.setUser({
         user: {
           ...serializedValue.user,
