@@ -2,15 +2,21 @@ export interface UserContextProviderProps {
   children: React.ReactNode
 }
 
+export interface UserStateInterface {
+  name: string
+  email: string
+  password: string
+}
+
 export type UserContextStateInterface = {
-  user: {
-    email: string
-    name: string
-    password: string
-  } | null
+  loggedUser?: UserStateInterface | null
+  registeredUsers?: UserStateInterface[]
 }
 
 export interface UserContextActionsInterface {
-  setUser: (user: UserContextStateInterface) => void
-  removeUser: () => void
+  setLoggedUser: (user: UserStateInterface) => void
+  setUser: (user: UserStateInterface) => void
+  removeUser: (user: UserStateInterface) => void
+  removeLoggedUser: () => void
+  getLoggedUserFromLocalStorage?: () => Promise<void>
 }
