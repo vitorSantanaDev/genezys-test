@@ -1,7 +1,7 @@
-import { Address } from './address.interface'
+import { AddressInterface } from './address.interface'
 
 export interface User {
   email: string
   name: string
-  address: Address
+  address: AddressInterface
 }

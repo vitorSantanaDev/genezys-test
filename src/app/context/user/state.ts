@@ -1,19 +1,13 @@
-import { User } from '@/app/interfaces/user.interface'
+import {
+  UserContextActionsInterface,
+  UserContextStateInterface
+} from './context.interface'
 
-export interface UserContextState {
-  user: User | null
-}
-
-export const INITIAL_STATE_USER_CONTEXT: UserContextState = {
+export const INITIAL_STATE_USER_CONTEXT: UserContextStateInterface = {
   user: null
 }
 
-export interface UserContextActions {
-  setUser: (user: User) => void
-  removeUser: () => void
-}
-
-export const INITIAL_STATE_USER_CONTEXT_ACTIONS: UserContextActions = {
+export const INITIAL_STATE_USER_CONTEXT_ACTIONS: UserContextActionsInterface = {
   removeUser: () => null,
   setUser: () => null
 }

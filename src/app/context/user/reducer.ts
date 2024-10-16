@@ -1,15 +1,15 @@
-import { User } from '@/app/interfaces/user.interface'
-
-import { UserContextState } from './state'
-
 import * as actionsTypes from './actions-types'
+import { UserContextStateInterface } from './context.interface'
 
-type action = { type: string; payload: User | null }
+type action = { type: string; payload: UserContextStateInterface }
 
-export const reducer = (state: UserContextState, action: action) => {
+export const reducer = (
+  state: UserContextStateInterface,
+  action: action
+): UserContextStateInterface => {
   switch (action.type) {
     case actionsTypes.SET_USER: {
-      return { ...state, user: action.payload }
+      return { ...state, user: action.payload.user }
     }
     case actionsTypes.REMOVE_USER: {
       return { ...state, user: null }

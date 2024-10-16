@@ -1,4 +1,4 @@
-export interface AddressResponse {
+export interface AddressResponseInterface {
   bairro: string
   cep: string
   complemento: string
@@ -14,7 +14,7 @@ export interface AddressResponse {
   unidade: string
 }
 
-export interface Address {
+export interface AddressInterface {
   uf: string
   city: string
   address: string

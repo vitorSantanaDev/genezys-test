@@ -1,14 +1,17 @@
-import { User } from '@/app/interfaces/user.interface'
 import * as actionsTypes from './actions-types'
 import { Dispatch } from 'react'
+import { UserContextStateInterface } from './context.interface'
 
-type action = { type: string; payload: User | null }
+type action = {
+  type: string
+  payload: UserContextStateInterface
+}
 
 export const buildActions = (dispatch: Dispatch<action>) => {
   return {
-    setUser: (user: User) =>
+    setUser: (user: UserContextStateInterface) =>
       dispatch({ type: actionsTypes.SET_USER, payload: user }),
     removeUser: () =>
-      dispatch({ type: actionsTypes.REMOVE_USER, payload: null })
+      dispatch({ type: actionsTypes.REMOVE_USER, payload: { user: null } })
   }
 }

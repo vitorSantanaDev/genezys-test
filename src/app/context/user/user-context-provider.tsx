@@ -5,19 +5,19 @@ import { createContext, useEffect, useReducer, useRef } from 'react'
 import { reducer } from './reducer'
 import {
   INITIAL_STATE_USER_CONTEXT,
-  INITIAL_STATE_USER_CONTEXT_ACTIONS,
-  UserContextActions,
-  UserContextState
+  INITIAL_STATE_USER_CONTEXT_ACTIONS
 } from './state'
-import { User } from '@/app/interfaces/user.interface'
 
-interface Props {
-  children: React.ReactNode
-}
+import { encryptPassword, USER_SECRET_KEY } from '@/utils/encrypt-password'
+import {
+  UserContextActionsInterface,
+  UserContextProviderProps,
+  UserContextStateInterface
+} from './context.interface'
 
 export const UserContext = createContext<{
-  state: UserContextState
-  actions: UserContextActions
+  state: UserContextStateInterface
+  actions: UserContextActionsInterface
 }>({
   state: INITIAL_STATE_USER_CONTEXT,
   actions: INITIAL_STATE_USER_CONTEXT_ACTIONS
@@ -25,14 +25,16 @@ export const UserContext = createContext<{
 
 const LOCAL_STORAGE_KEY = '@userSession'
 
-export const UserContextProvider: React.FC<Props> = ({ children }) => {
+export const UserContextProvider: React.FC<UserContextProviderProps> = ({
+  children
+}) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE_USER_CONTEXT)
 
   const actions = useRef(buildActions(dispatch))
 
-  function saveUserToLocalStorage(value: User) {
+  function saveUserToLocalStorage(value: UserContextStateInterface) {
     try {
-      const serializedValue = JSON.stringify(value)
+      const serializedValue = JSON.stringify(value.user)
       localStorage.setItem(LOCAL_STORAGE_KEY, serializedValue)
     } catch (error) {
       console.error(error)
@@ -52,7 +54,14 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (!state.user) return
-    saveUserToLocalStorage(state.user)
+    // TODO: it is not recommended to make this operation on the front-end for user security reasons. But this is just an example of authentication
+    const userPassword = encryptPassword(state.user.password, USER_SECRET_KEY)
+    saveUserToLocalStorage({
+      user: {
+        ...state.user,
+        password: userPassword
+      }
+    })
   }, [state.user])
 
   useEffect(() => {
