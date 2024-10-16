@@ -8,7 +8,11 @@ import {
   INITIAL_STATE_USER_CONTEXT_ACTIONS
 } from './state'
 
-import { encryptPassword, USER_SECRET_KEY } from '@/utils/encrypt-password'
+import {
+  decryptPassword,
+  encryptPassword,
+  USER_SECRET_KEY
+} from '@/utils/encrypt-password'
 import {
   UserContextActionsInterface,
   UserContextProviderProps,
@@ -43,10 +47,28 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
 
   function getUserFromLocalStorage() {
     try {
-      const serializedValue = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY) || ''
+      const serializedValue: UserContextStateInterface = {
+        user: JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '')
+      }
+
+      if (!serializedValue.user) return
+
+      console.log(
+        decryptPassword(
+          serializedValue.user?.password as string,
+          USER_SECRET_KEY
+        )
       )
-      actions.current.setUser(serializedValue)
+
+      actions.current.setUser({
+        user: {
+          ...serializedValue.user,
+          password: decryptPassword(
+            serializedValue.user?.password as string,
+            USER_SECRET_KEY
+          )
+        }
+      })
     } catch (error) {
       console.error(error)
     }
@@ -62,7 +84,8 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
         password: userPassword
       }
     })
-  }, [state.user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.user?.email, state.user?.password, state.user?.name])
 
   useEffect(() => {
     getUserFromLocalStorage()
