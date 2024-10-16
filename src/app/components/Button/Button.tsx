@@ -18,7 +18,7 @@ export function Button({
     <button
       {...restButtonProps}
       className={twMerge(
-        'transition-colors duration-300 ease-in-out rounded-xl',
+        'transition-colors duration-300 ease-in-out rounded-xl w-full',
         clsx(
           {
             'p-3': isSmall,

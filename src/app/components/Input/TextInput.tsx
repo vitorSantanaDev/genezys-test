@@ -40,7 +40,7 @@ export function TextInput({
         const hasError = !!errors[name]?.message
 
         return (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             {label && (
               <label
                 className="text-content-primary text-text-large"
@@ -53,7 +53,7 @@ export function TextInput({
               type={type}
               disabled={disabled}
               className={twMerge(
-                'min-w-max py-2 px-4 outline-none border-2 border-solid bg-background-secondary rounded-md text-text-medium text-content-body',
+                'w-full py-2 px-4 outline-none border-2 border-solid bg-background-secondary rounded-md text-text-medium text-content-body',
                 clsx({
                   'border-border-primary': !hasError,
                   'border-accent-red': hasError,
