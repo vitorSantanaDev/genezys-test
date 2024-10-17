@@ -34,7 +34,7 @@ export default function Register() {
   const [isLoadingUser, toggleIsLoadingUser] = useReducer((prev) => !prev, true)
 
   const {
-    state: { loggedUser },
+    state: { loggedUser, registeredUsers },
     actions: { setLoggedUser, setUser, getLoggedUserFromLocalStorage }
   } = useUserContext()
 
@@ -44,6 +44,15 @@ export default function Register() {
         name: data.name,
         email: data.email,
         password: data.password
+      }
+
+      const userAlreadyRegistered = registeredUsers?.find(
+        (user) => user.email === payload.email
+      )
+
+      if (userAlreadyRegistered) {
+        toast.error('Este email jás está em uso!')
+        return
       }
 
       setUser(payload)
@@ -64,7 +73,9 @@ export default function Register() {
 
       router.push(Routing.HOME)
     } catch (err) {
-      console.error(err)
+      toast.error(
+        'Ocorreu algum erro ao criar o usuário, por favor tente mais tarde!'
+      )
     }
   }
 
