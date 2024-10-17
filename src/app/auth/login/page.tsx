@@ -14,15 +14,10 @@ import { TextInput } from '@/app/components/Input/TextInput'
 import { LoginFieldsInterface, LoginSchema } from './login.defs'
 import { useUserContext } from '@/app/context/user/useUserContext'
 
-import {
-  LOCAL_STORAGE_KEY,
-  LocalStorageDataInterface
-} from '@/app/context/user/user-context-provider'
-
 export default function Login() {
   const {
-    state: { loggedUser },
-    actions: { setLoggedUser: setUser, getLoggedUserFromLocalStorage }
+    state: { loggedUser, registeredUsers },
+    actions: { setLoggedUser: setUser }
   } = useUserContext()
 
   const [isLoadingUser, toggleIsLoadingUser] = useReducer((prev) => !prev, true)
@@ -39,7 +34,7 @@ export default function Login() {
   const router = useRouter()
 
   const onSubmit = async (data: LoginFieldsInterface) => {
-    const user = getUserFromLocalStorage(data.email, data.password)
+    const user = registeredUsers?.find((user) => user.email === data.email)
 
     if (!user) {
       throwUnregisteredUserError()
@@ -59,41 +54,16 @@ export default function Login() {
     toast.error('Email ou senha inválidos')
   }
 
-  function getUserFromLocalStorage(email: string, password: string) {
-    try {
-      const localStorageData = localStorage.getItem(LOCAL_STORAGE_KEY)
-
-      if (!localStorageData) {
-        throwUnregisteredUserError()
-        return
-      }
-
-      const parsedData: LocalStorageDataInterface = JSON.parse(localStorageData)
-
-      const user = parsedData.registeredUsers?.find(
-        (user) => user.email === email && user.password === password
-      )
-
-      return user
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   function throwUnregisteredUserError() {
     toast.error('Usuário não cadastrado!')
   }
 
   useEffect(() => {
-    ;(async () => {
-      await getLoggedUserFromLocalStorage?.()
-      toggleIsLoadingUser()
-    })()
-  }, [])
-
-  useEffect(() => {
     if (loggedUser) {
       router.replace(Routing.HOME)
+      toggleIsLoadingUser()
+    } else {
+      toggleIsLoadingUser()
     }
   }, [loggedUser])
 
