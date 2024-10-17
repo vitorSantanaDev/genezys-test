@@ -30,7 +30,9 @@ export const reducer = (
 
       if (!newUser) return { ...state }
 
-      const { registeredUsers = [] } = state
+      if (!state.registeredUsers) return { ...state }
+
+      const { registeredUsers } = state
 
       const userAlreadyExists = registeredUsers.find(
         (user) => user.email === newUser.email

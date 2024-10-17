@@ -1,3 +1,4 @@
+import { USERS_MOCK } from '@/mock/users'
 import {
   UserContextActionsInterface,
   UserContextStateInterface
@@ -5,7 +6,11 @@ import {
 
 export const INITIAL_STATE_USER_CONTEXT: UserContextStateInterface = {
   loggedUser: null,
-  registeredUsers: []
+  registeredUsers: USERS_MOCK.map((user) => ({
+    password: '',
+    name: user.name,
+    email: user.email
+  }))
 }
 
 export const INITIAL_STATE_USER_CONTEXT_ACTIONS: UserContextActionsInterface = {

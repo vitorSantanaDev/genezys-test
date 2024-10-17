@@ -36,50 +36,89 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
 
   const actions = useRef(buildActions(dispatch))
 
-  function saveUserToLocalStorage() {
-    const localStorageDataSerialized = localStorage.getItem(LOCAL_STORAGE_KEY)
-
-    let existingData: LocalStorageDataInterface = {
+  async function saveUserToLocalStorage() {
+    const data: LocalStorageDataInterface = {
       loggedUser: state.loggedUser,
       registeredUsers: state.registeredUsers
     }
 
-    if (localStorageDataSerialized) {
-      existingData = JSON.parse(localStorageDataSerialized)
-    }
-
-    const updatedData: LocalStorageDataInterface = {
-      ...existingData
-    }
-
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData))
+    await updateLocalStorage(data)
   }
 
   async function getLoggedUserFromLocalStorage() {
-    const localStorageDataSerialized = localStorage.getItem(LOCAL_STORAGE_KEY)
+    const existingData = await getExistingDataFromLocalStorage()
 
-    if (!localStorageDataSerialized) return
+    if (!existingData) return
 
-    const parsedData: LocalStorageDataInterface = JSON.parse(
-      localStorageDataSerialized
-    )
-
-    if (parsedData.loggedUser) {
-      const { loggedUser } = parsedData
+    if (existingData.loggedUser) {
+      const { loggedUser } = existingData
       actions.current.setLoggedUser(loggedUser)
     }
   }
 
+  async function removeLoggedUserFromLocalStorage() {
+    actions.current.removeLoggedUser()
+
+    const dataUpdated: LocalStorageDataInterface = {
+      loggedUser: null,
+      registeredUsers: []
+    }
+
+    const existingData = await getExistingDataFromLocalStorage()
+
+    if (existingData) {
+      dataUpdated.registeredUsers = existingData.registeredUsers
+    }
+
+    updateLocalStorage({ ...dataUpdated })
+  }
+
+  async function getExistingDataFromLocalStorage(): Promise<LocalStorageDataInterface | null> {
+    const localStorageDataSerialized = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+    if (localStorageDataSerialized) {
+      return JSON.parse(localStorageDataSerialized)
+    }
+    return null
+  }
+
+  async function updateLocalStorage(data: LocalStorageDataInterface) {
+    const updatedData: LocalStorageDataInterface = {
+      ...data
+    }
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData))
+  }
+
   useEffect(() => {
     if (!state.loggedUser && !state.registeredUsers?.length) return
-    saveUserToLocalStorage()
+    ;(async () => {
+      await saveUserToLocalStorage()
+    })()
   }, [state.registeredUsers?.length, state.loggedUser])
+
+  useEffect(() => {
+    ;(async () => {
+      await getLoggedUserFromLocalStorage()
+
+      const data = await getExistingDataFromLocalStorage()
+
+      if (data) {
+        data.registeredUsers?.forEach((user) => {
+          actions.current.setUser(user)
+        })
+      }
+    })()
+  }, [])
 
   return (
     <UserContext.Provider
       value={{
         state,
-        actions: { ...actions.current, getLoggedUserFromLocalStorage }
+        actions: {
+          ...actions.current,
+          getLoggedUserFromLocalStorage,
+          removeLoggedUserFromLocalStorage
+        }
       }}
     >
       {children}

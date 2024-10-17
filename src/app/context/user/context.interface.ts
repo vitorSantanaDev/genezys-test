@@ -19,4 +19,5 @@ export interface UserContextActionsInterface {
   removeUser: (user: UserStateInterface) => void
   removeLoggedUser: () => void
   getLoggedUserFromLocalStorage?: () => Promise<void>
+  removeLoggedUserFromLocalStorage?: () => Promise<void>
 }
