@@ -24,11 +24,7 @@ export default function Login() {
 
   const { control, handleSubmit } = useForm<LoginFieldsInterface>({
     resolver: zodResolver(LoginSchema),
-    mode: 'onChange',
-    defaultValues: {
-      email: 'vitor@email.com',
-      password: '654asd321ASD!'
-    }
+    mode: 'onChange'
   })
 
   const router = useRouter()
