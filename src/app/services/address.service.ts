@@ -3,6 +3,7 @@ import {
   AddressInterface,
   AddressResponseInterface
 } from '../interfaces/address.interface'
+import { toast } from 'react-toastify'
 
 export async function getAddress(zipcode: string) {
   try {
@@ -22,6 +23,8 @@ export async function getAddress(zipcode: string) {
 
     return data
   } catch (e) {
-    console.error(e)
+    toast.error(
+      'Ocorreu algum ao buscar informações do CEP. Por favor tente mais tarde!'
+    )
   }
 }

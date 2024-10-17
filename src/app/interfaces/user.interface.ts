@@ -1,6 +1,6 @@
 import { AddressInterface } from './address.interface'
 
-export interface User {
+export interface UserInterface {
   email: string
   name: string
   address: AddressInterface
